@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useContext } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { PeerContext } from "./Context";
 import { useRouter } from "next/navigation";
 
@@ -10,13 +10,19 @@ export default function Home() {
     const [myId, setMyId] = useState("");
     const [remoteId, setRemoteId] = useState("");
     const [invitaions, setInvitaions] = useState([]);
-    const [isVisible, setIsVisible] = useState(true);
+
     const idRef = useRef();
 
     const router = useRouter();
 
-    const { createOffer, socket, createAnswer, addAnswer } =
-        useContext(PeerContext);
+    const {
+        createOffer,
+        socket,
+        createAnswer,
+        addAnswer,
+        isError,
+        setIsError,
+    } = useContext(PeerContext);
 
     useEffect(() => {
         socket.on("my_id", (data) => {
@@ -34,10 +40,6 @@ export default function Home() {
             setRemoteId(data.senderId);
             router.push("/room");
         });
-
-        setTimeout(() => {
-            setIsVisible(false);
-        }, 2000);
     }, [socket]);
 
     return (
@@ -56,6 +58,40 @@ export default function Home() {
  
             <textarea id="offer-sdp" />
             <textarea id="answer-sdp" /> */}
+            {isError && (
+                <div className="absolute flex w-full h-full items-center flex-col mt-[100px] ">
+                    <motion.div
+                        className="bg-red-400 p-[20px] z-[11] font-bold"
+                        initial={{ y: -75, opacity: 0 }}
+                        animate={{ y: 25, opacity: 1 }}
+                        transition={{
+                            type: "tween",
+                            ease: "easeOut",
+                            duration: 0.75,
+                        }}
+                    >
+                        <h3>Произошла ошибка</h3>
+                        {/* <p className="break-words">
+                            asdhkaujsdkjhasgdgjhkasgdjkagsjhdghjasgdgasgdjgjahsjd
+                        </p> */}
+                        <p>
+                            Для решения проблемы попробуйте перезагрузить
+                            страницу
+                        </p>
+                        <br />
+                        <button
+                            onClick={() => {
+                                router.push("/");
+                                setIsError(false);
+                                window.location.reload();
+                            }}
+                        >
+                            Перезагрузить
+                        </button>
+                    </motion.div>
+                </div>
+            )}
+
             <div className="absolute flex w-full h-full items-center flex-col ">
                 {invitaions.map((invite, index) => {
                     return (
