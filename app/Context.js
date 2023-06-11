@@ -11,7 +11,7 @@ let peerConnection;
 let localStream;
 let remoteStream;
 let dataChannel;
-const socket = io("http://localhost:5000");
+const socket = io("http://62.113.98.36:5000/");
 
 let servers = {
     iceServers: [
