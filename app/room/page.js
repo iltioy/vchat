@@ -3,6 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import { PeerContext } from "../Context";
 import { TbSend } from "react-icons/tb";
+import "./room.css";
 
 const page = () => {
     const {
@@ -14,6 +15,7 @@ const page = () => {
         remoteStream,
         localStream,
         messages,
+        scrollRef,
     } = useContext(PeerContext);
 
     const [textValue, setTextValue] = useState("");
@@ -39,23 +41,21 @@ const page = () => {
 
     return (
         <>
-            <div className="w-full h-full bg-[#222] text-white grid grid-cols-1 md:grid-cols-2 ">
-                <div className="max-h-full items-center flex flex-col mt-[50px]">
+            {/* grid grid-cols-1 md:grid-cols-2  */}
+            <div className="w-full h-full bg-[#222] text-white flex flex-col md:flex-row">
+                <div className="max-h-full md:h-full items-center flex flex-col mt-[50px] mb-[20px] md:mb-0 flex-1">
                     <video
-                        className="w-full max-w-[80%]  md:h-[300px] max-h-[35%] mb-[50px]"
+                        className="w-full max-w-[80%] max-h-[40%] md:h-[400px] md:max-h-[35%] mb-[50px] "
                         ref={localStreamRef}
                     />
                     <video
-                        className="w-full max-w-[80%]  md:h-[300px] max-h-[35%]"
+                        className="w-full max-w-[80%] max-h-[40%]  md:h-[400px] md:max-h-[35%]"
                         ref={remoteStreamRef}
                         id="remote"
                     />
                 </div>
-                <div
-                    className="w-full md:h-full  flex flex-col bg-[#222] pl-[10px]"
-                    style={{ borderLeft: "1px solid #ccc" }}
-                >
-                    <div className="h-full">
+                <div className="w-full flex flex-col max-h-full bg-[#222] pl-[20px] pr-[10px] relative leftBorder flex-1">
+                    <div className="h-[400px] md:absolute md:h-[calc(100%-55px)] overflow-auto w-[calc(100%-30px)] right-[5px] flex flex-col">
                         {messages.map((m, index) => {
                             return (
                                 <div key={index}>
@@ -66,11 +66,17 @@ const page = () => {
                                 </div>
                             );
                         })}
+
+                        {/* <br /> */}
                     </div>
-                    <form className="mt-auto flex flex-row mb-[5px]">
+
+                    <form className="mt-auto flex flex-row mb-[5px] md:absolute md:h-[50px] md:bottom-0 w-[calc(100%-30px)] right-[5px]">
                         <textarea
-                            className="w-full bg-[#222] outline-none p-[5px] "
-                            style={{ border: "1px solid #ccc" }}
+                            className="w-full bg-[#222] outline-none p-[5px] rounded-[5px]"
+                            style={{
+                                border: "1px solid #ccc",
+                                boxShadow: "0 0 5px #ccc",
+                            }}
                             onChange={(e) => setTextValue(e.target.value)}
                             value={textValue}
                         />

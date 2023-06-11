@@ -27,6 +27,7 @@ let servers = {
 const ContextProvider = ({ children }) => {
     const localStreamRef = useRef();
     const remoteStreamRef = useRef();
+    const scrollRef = useRef();
 
     const [localStreamState, setLocalStreamStaete] = useState(null);
     const [remoteStreamState, setRemoteStreamState] = useState(null);
@@ -65,11 +66,16 @@ const ContextProvider = ({ children }) => {
 
             peerConnection.ondatachannel = (e) => {
                 peerConnection.dc = e.channel;
-                peerConnection.dc.onmessage = (e) =>
+                peerConnection.dc.onmessage = (e) => {
                     setMessages((prevState) => [
                         ...prevState,
                         { message: e.data, mine: false },
                     ]);
+
+                    if (scrollRef.current) {
+                        scrollRef.current.scrollIntoView();
+                    }
+                };
                 peerConnection.dc.onopen = (e) => console.log("opened!");
             };
 
@@ -92,6 +98,9 @@ const ContextProvider = ({ children }) => {
     const sendMessage = async ({ message }) => {
         try {
             setMessages((prevState) => [...prevState, { message, mine: true }]);
+            if (scrollRef.current) {
+                scrollRef.current.scrollIntoView();
+            }
             await dataChannel.send(message);
         } catch (error) {
             handleError(error);
@@ -198,6 +207,7 @@ const ContextProvider = ({ children }) => {
                 messages,
                 isError,
                 setIsError,
+                scrollRef,
             }}
         >
             {children}

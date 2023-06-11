@@ -26,6 +26,7 @@ export default function Home() {
 
     useEffect(() => {
         socket.on("my_id", (data) => {
+            console.log(data);
             setMyId(data);
         });
 
